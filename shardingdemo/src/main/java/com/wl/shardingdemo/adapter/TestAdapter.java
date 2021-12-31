@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wl.shardingdemo.entity.WlShardTestEntity;
 import com.wl.shardingdemo.mapper.WlShardTestMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.api.hint.HintManager;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -81,5 +82,17 @@ public class TestAdapter {
         wrapper.eq(WlShardTestEntity::getUserId,18L);
         wrapper.between(WlShardTestEntity::getCid,683679938234023936L, 683679951433498624L);
         return wlShardTestMapper.selectList(wrapper);
+    }
+    
+    @GetMapping("/hint/one")
+    public WlShardTestEntity getHintOne() {
+        HintManager hintManager = HintManager.getInstance();
+        hintManager.addDatabaseShardingValue("ds", 0);
+        hintManager.addTableShardingValue("wl_shard_test", 1);
+        LambdaQueryWrapper<WlShardTestEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(WlShardTestEntity::getCid,683679938234023936L);
+        WlShardTestEntity wlShardTestEntity = wlShardTestMapper.selectOne(wrapper);
+        hintManager.close();
+        return wlShardTestEntity;
     }
 }
