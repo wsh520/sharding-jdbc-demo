@@ -1,5 +1,6 @@
 package com.wl.shardingdemo.algo;
 
+import com.google.common.collect.Range;
 import org.apache.shardingsphere.api.sharding.complex.ComplexKeysShardingAlgorithm;
 import org.apache.shardingsphere.api.sharding.complex.ComplexKeysShardingValue;
 
@@ -24,15 +25,18 @@ public class MyTbComplexKeysShardingAlgorithm implements ComplexKeysShardingAlgo
     @Override
     public Collection<String> doSharding(Collection<String> dbNames, ComplexKeysShardingValue<Long> complexKeysShardingValue) {
         Map<String, Collection<Long>> columnNameAndShardingValuesMap = complexKeysShardingValue.getColumnNameAndShardingValuesMap();
-        Collection<Long> cidCollection = columnNameAndShardingValuesMap.get("cid");
+        Map<String, Range<Long>> columnNameAndRangeValuesMap = complexKeysShardingValue.getColumnNameAndRangeValuesMap();
+//        Collection<Long> cidCollection = columnNameAndShardingValuesMap.get("cid");
+        Range<Long> longRange = columnNameAndRangeValuesMap.get("cid");
+        Long lowerEndpoint = longRange.lowerEndpoint();
+        Long upperEndpoint = longRange.upperEndpoint();
         Set<String> result = new LinkedHashSet<>();
-        Iterator<Long> iterator = cidCollection.iterator();
         String logicTableName = complexKeysShardingValue.getLogicTableName();
         // 确定范围路由的表
-        while (iterator.hasNext()) {
-            Long next = iterator.next();
-            result.add(logicTableName + "_" + (next % 2 + 1));
-        }
-        return result;
+//        for (long i = lowerEndpoint; i <= upperEndpoint; i++) {
+//            result.add(logicTableName + "_" + (i % 2 + 1));
+//        }
+        List<String> strings = Arrays.asList("wl_shard_test_1", "wl_shard_test_2");
+        return strings;
     }
 }

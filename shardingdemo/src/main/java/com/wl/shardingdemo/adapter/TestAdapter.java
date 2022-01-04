@@ -87,10 +87,15 @@ public class TestAdapter {
     @GetMapping("/hint/one")
     public WlShardTestEntity getHintOne() {
         HintManager hintManager = HintManager.getInstance();
-        hintManager.addDatabaseShardingValue("ds", 0);
+        // 控制路由到 具体的库 value值: 可以作为库的判断条件
+        hintManager.addDatabaseShardingValue("wl_shard_test", 74%2);
+        // 控制路由到 具体的表 value值: 可以作为表的判断条件
         hintManager.addTableShardingValue("wl_shard_test", 1);
+//        hintManager.addDatabaseShardingValue("user_id", 74%2);
+//        hintManager.addTableShardingValue("user_id", 1);
         LambdaQueryWrapper<WlShardTestEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(WlShardTestEntity::getCid,683679938234023936L);
+        wrapper.eq(WlShardTestEntity::getUserId,74L);
         WlShardTestEntity wlShardTestEntity = wlShardTestMapper.selectOne(wrapper);
         hintManager.close();
         return wlShardTestEntity;
