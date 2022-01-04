@@ -16,7 +16,7 @@ import java.util.Set;
  * @Description 范围库分片算法
  * @Date 2021/12/31
  */
-public class MyDbRangeShardingAlgorithm implements RangeShardingAlgorithm<Integer> {
+public class MyDbRangeShardingAlgorithm implements RangeShardingAlgorithm<Long> {
 
     /**
      * 范围库分片
@@ -26,13 +26,13 @@ public class MyDbRangeShardingAlgorithm implements RangeShardingAlgorithm<Intege
      * @return 库名
      */
     @Override
-    public Collection<String> doSharding(Collection<String> dbNames, RangeShardingValue<Integer> rangeShardingValue) {
-        Range<Integer> valueRange = rangeShardingValue.getValueRange();
-        Integer lowerValue = valueRange.lowerEndpoint();
-        Integer upperValue = valueRange.upperEndpoint();
+    public Collection<String> doSharding(Collection<String> dbNames, RangeShardingValue<Long> rangeShardingValue) {
+        Range<Long> valueRange = rangeShardingValue.getValueRange();
+        Long lowerValue = valueRange.lowerEndpoint();
+        Long upperValue = valueRange.upperEndpoint();
         Set<String> result = new LinkedHashSet<>();
         int size = dbNames.size();
-        for (int i = lowerValue; i <= upperValue; i++) {
+        for (long i = lowerValue; i <= upperValue; i++) {
             for (String dbName : dbNames) {
                 if (dbName.endsWith(i % size + "")) {
                     result.add(dbName);

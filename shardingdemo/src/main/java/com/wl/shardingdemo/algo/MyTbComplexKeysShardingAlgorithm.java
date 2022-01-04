@@ -26,17 +26,26 @@ public class MyTbComplexKeysShardingAlgorithm implements ComplexKeysShardingAlgo
     public Collection<String> doSharding(Collection<String> dbNames, ComplexKeysShardingValue<Long> complexKeysShardingValue) {
         Map<String, Collection<Long>> columnNameAndShardingValuesMap = complexKeysShardingValue.getColumnNameAndShardingValuesMap();
         Map<String, Range<Long>> columnNameAndRangeValuesMap = complexKeysShardingValue.getColumnNameAndRangeValuesMap();
-//        Collection<Long> cidCollection = columnNameAndShardingValuesMap.get("cid");
-        Range<Long> longRange = columnNameAndRangeValuesMap.get("cid");
-        Long lowerEndpoint = longRange.lowerEndpoint();
-        Long upperEndpoint = longRange.upperEndpoint();
-        Set<String> result = new LinkedHashSet<>();
+        Collection<Long> cidCollection = columnNameAndShardingValuesMap.get("cid");
         String logicTableName = complexKeysShardingValue.getLogicTableName();
-        // 确定范围路由的表
-//        for (long i = lowerEndpoint; i <= upperEndpoint; i++) {
-//            result.add(logicTableName + "_" + (i % 2 + 1));
-//        }
-        List<String> strings = Arrays.asList("wl_shard_test_1", "wl_shard_test_2");
-        return strings;
+        Set<String> result = new LinkedHashSet<>();
+        if (null != cidCollection && cidCollection.size() > 0) {
+            for (Long next : cidCollection) {
+                result.add(logicTableName + "_" + (next % 2 + 1));
+            }
+        }
+        Range<Long> longRange = columnNameAndRangeValuesMap.get("cid");
+        if (null != longRange) {
+
+            Long lowerEndpoint = longRange.lowerEndpoint();
+            Long upperEndpoint = longRange.upperEndpoint();
+            //  确定范围路由的表
+//            for (long i = lowerEndpoint; i <= upperEndpoint; i++) {
+//                result.add(logicTableName + "_" + (i % 2 + 1));
+//            }
+            result.add("wl_shard_test_1");
+            result.add("wl_shard_test_2");
+        }
+        return result;
     }
 }

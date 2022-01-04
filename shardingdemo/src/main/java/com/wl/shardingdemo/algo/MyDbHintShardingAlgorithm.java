@@ -12,13 +12,14 @@ import java.util.Set;
  * @Description TODO
  * @Date 2021/12/31
  */
-public class MyDbHintShardingAlgorithm implements HintShardingAlgorithm<Long> {
+public class MyDbHintShardingAlgorithm implements HintShardingAlgorithm<Integer> {
     @Override
-    public Collection<String> doSharding(Collection<String> collection, HintShardingValue<Long> hintShardingValue) {
-        String logicTableName = hintShardingValue.getLogicTableName();
-        Collection<Long> values = hintShardingValue.getValues();
+    public Collection<String> doSharding(Collection<String> collection, HintShardingValue<Integer> hintShardingValue) {
+        Collection<Integer> values = hintShardingValue.getValues();
         Set<String> set = new HashSet<>();
-        set.add("ds0");
+        for (Integer value : values) {
+            set.add("ds" + value);
+        }
         return set;
     }
 }

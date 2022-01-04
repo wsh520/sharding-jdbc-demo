@@ -29,8 +29,8 @@ public class MyTbPreciseShardingAlgorithm implements PreciseShardingAlgorithm<Lo
             Long value = preciseShardingValue.getValue();
             int dbSuffix = (int)(value % 2 + 1);
             Iterator<String> iterator = tbNames.iterator();
-            String tableName = iterator.next();
-            return tableName + "_" + dbSuffix;
+            String logicTableName = preciseShardingValue.getLogicTableName();
+            return logicTableName + "_" + dbSuffix;
         }
 
         throw new RuntimeException("路由数据库不存在!");

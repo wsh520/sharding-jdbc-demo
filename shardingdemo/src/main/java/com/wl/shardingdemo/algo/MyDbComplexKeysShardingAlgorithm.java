@@ -25,19 +25,32 @@ public class MyDbComplexKeysShardingAlgorithm implements ComplexKeysShardingAlgo
     @Override
     public Collection<String> doSharding(Collection<String> dbNames, ComplexKeysShardingValue<Long> complexKeysShardingValue) {
         Map<String, Collection<Long>> columnNameAndShardingValuesMap = complexKeysShardingValue.getColumnNameAndShardingValuesMap();
-        Map<String, Range<Long>> columnNameAndRangeValuesMap = complexKeysShardingValue.getColumnNameAndRangeValuesMap();
-        Collection<Long> userIdColl = columnNameAndShardingValuesMap.get("user_id");
-        Iterator<Long> iterator = userIdColl.iterator();
         Set<String> result = new LinkedHashSet<>();
-//        while (iterator.hasNext()) {
-//            Long next = iterator.next();
-//            if (next % 2 == 0) {
-//                result.add("ds0");
-//            } else {
-//                result.add("ds1");
-//            }
-//        }
-        List<String> strings = Arrays.asList("ds0", "ds1");
-        return strings;
+        if (columnNameAndShardingValuesMap.size() > 0) {
+            Collection<Long> userIdColl = columnNameAndShardingValuesMap.get("user_id");
+            if (userIdColl.size() > 0) {
+                for (Long aLong : userIdColl) {
+                    if (aLong % 2 == 0) {
+                        result.add("ds0");
+                    } else {
+                        result.add("ds1");
+                    }
+                }
+            }
+
+        }
+        Map<String, Range<Long>> columnNameAndRangeValuesMap = complexKeysShardingValue.getColumnNameAndRangeValuesMap();
+        Range<Long> longRange = columnNameAndRangeValuesMap.get("user_id");
+        if (null != longRange) {
+
+            Long lowerEndpoint = longRange.lowerEndpoint();
+            Long upperEndpoint = longRange.upperEndpoint();
+            //  确定范围路由的表
+            for (long i = lowerEndpoint; i <= upperEndpoint; i++) {
+                result.add("ds" + (i % 2));
+            }
+        }
+
+        return result;
     }
 }

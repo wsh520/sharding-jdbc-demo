@@ -53,7 +53,7 @@ public class TestAdapter {
     @GetMapping("/one")
     public WlShardTestEntity getOne() {
         LambdaQueryWrapper<WlShardTestEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(WlShardTestEntity::getCid, 683339473181736960L);
+        wrapper.eq(WlShardTestEntity::getCid, 683679938234023936L);
         return wlShardTestMapper.selectOne(wrapper);
     }
 
@@ -65,8 +65,8 @@ public class TestAdapter {
     @GetMapping("/list/in")
     public List<WlShardTestEntity> getList() {
         LambdaQueryWrapper<WlShardTestEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(WlShardTestEntity::getUserId, 46L);
-        wrapper.eq(WlShardTestEntity::getCid, 683622610776358912L);
+        wrapper.in(WlShardTestEntity::getUserId, 20L,60L);
+        wrapper.in(WlShardTestEntity::getCid, 683679937458077696L, 683679943468515329L);
         return wlShardTestMapper.selectList(wrapper);
     }
 
@@ -79,8 +79,8 @@ public class TestAdapter {
     @GetMapping("/list/between")
     public List<WlShardTestEntity> getBetweenList() {
         LambdaQueryWrapper<WlShardTestEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(WlShardTestEntity::getUserId,18L);
-        wrapper.between(WlShardTestEntity::getCid,683679938234023936L, 683679951433498624L);
+        wrapper.between(WlShardTestEntity::getUserId,20L,63L);
+        wrapper.between(WlShardTestEntity::getCid,683679937458077696L, 683679943468515329L);
         return wlShardTestMapper.selectList(wrapper);
     }
     
@@ -91,8 +91,6 @@ public class TestAdapter {
         hintManager.addDatabaseShardingValue("wl_shard_test", 74%2);
         // 控制路由到 具体的表 value值: 可以作为表的判断条件
         hintManager.addTableShardingValue("wl_shard_test", 1);
-//        hintManager.addDatabaseShardingValue("user_id", 74%2);
-//        hintManager.addTableShardingValue("user_id", 1);
         LambdaQueryWrapper<WlShardTestEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(WlShardTestEntity::getCid,683679938234023936L);
         wrapper.eq(WlShardTestEntity::getUserId,74L);
